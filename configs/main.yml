@@ -1,0 +1,32 @@
+http:
+  port: 8000
+  maxHeaderMegabytes: 1
+  readTimeout: 10s
+  writeTimeout: 10s
+
+cache:
+  ttl: 60s
+
+database:
+  name: meteoGo
+
+auth:
+  accessTokenTTL: 2h
+  refreshTokenTTL: 720h # 30 days
+  verificationCodeLength: 8
+
+limiter:
+  rps: 10
+  burst: 20
+  ttl: 10m
+
+smtp:
+  host: "mail.privateemail.com"
+  port: 587
+  from: "user.ya0074@gmail.com"
+
+email:
+  templates:
+    verification_email: "./templates/verification_email.html"
+  subject:
+    verification_email: "Thank you for registering, %s"
