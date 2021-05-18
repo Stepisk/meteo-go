@@ -3,7 +3,14 @@ package http
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"gitlab.com/peleng-meteo/meteo-go/docs"
 	"gitlab.com/peleng-meteo/meteo-go/internal/config"
+	v1 "gitlab.com/peleng-meteo/meteo-go/internal/delivery/http/v1"
+	"gitlab.com/peleng-meteo/meteo-go/internal/service"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/auth"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/limiter"
 	"net/http"
 )
 

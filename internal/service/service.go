@@ -5,13 +5,18 @@ import (
 	"gitlab.com/peleng-meteo/meteo-go/internal/config"
 	"gitlab.com/peleng-meteo/meteo-go/internal/domain"
 	"gitlab.com/peleng-meteo/meteo-go/internal/repository"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/auth"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/cache"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/email"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/hash"
+	"gitlab.com/peleng-meteo/meteo-go/pkg/otp"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
 
-// TODO handle "not found" errors
+// TODO: handle "not found" errors
 
 type SignUpInput struct {
 	Name     string
@@ -31,7 +36,7 @@ type Tokens struct {
 
 type Users interface {
 	SignUp(ctx context.Context, input SignUpInput) error
-	SingIn(ctx context.Context, input SignInInput) (Tokens, error)
+	SignIn(ctx context.Context, input SignInInput) (Tokens, error)
 	RefreshTokens(ctx context.Context, refreshToken string) (Tokens, error)
 	Verify(ctx context.Context, hash string) error
 	GetById(ctx context.Context, id primitive.ObjectID) (domain.User, error)
@@ -79,8 +84,8 @@ func NewServices(deps Deps) *Services {
 	emailsService := NewEmailsService(deps.EmailProvider, deps.EmailSender, deps.EmailConfig, deps.FrontendURL)
 	usersService := NewUsersService(deps.Repos.Users, deps.Hasher, deps.TokenManager, emailsService, deps.AccessTokenTTL, deps.RefreshTokenTTL, deps.OtpGenerator, deps.VerificationCodeLength)
 
-	return &Services {
-		Users: usersService,
-
+	return &Services{
+		Users:  usersService,
+		Admins: NewAdminsService(deps.Hasher, deps.TokenManager, deps.Repos.Admins, deps.AccessTokenTTL, deps.RefreshTokenTTL),
 	}
 }

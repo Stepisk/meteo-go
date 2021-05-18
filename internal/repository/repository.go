@@ -13,6 +13,7 @@ type Users interface {
 	GetByRefreshToken(ctx context.Context, refreshToken string) (domain.User, error)
 	SetSession(ctx context.Context, id primitive.ObjectID, session domain.Session) error
 	GetById(ctx context.Context, id primitive.ObjectID) (domain.User, error)
+	Verify(ctx context.Context, code string) error
 }
 
 type Admins interface {
@@ -35,7 +36,7 @@ type Repositories struct {
 
 func NewRepositories(db *mongo.Database) *Repositories {
 	return &Repositories{
-		Users: NewUsersRepo(db),
+		Users:  NewUsersRepo(db),
 		Admins: NewAdminsRepo(db),
 	}
 }
